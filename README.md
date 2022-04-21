@@ -1,7 +1,7 @@
 # Дипломный проект Movies" (backend)
 Написана в рамках обучения на курсе веб-разработчик [Яндекс-практикума](https://practicum.yandex.ru/profile/web/), диплом.
 
-#### Адрес домена: [https://api.movies.krasnovid.nomoredomains.work/]
+#### Адрес домена: https://api.movies.krasnovid.nomoredomains.work/
 
 ## Описание:
 Это  интерактивный сайт, для поиска фильмов и добавления их в избранное.   
