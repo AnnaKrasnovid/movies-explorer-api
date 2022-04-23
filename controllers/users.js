@@ -13,20 +13,21 @@ module.exports.getCurrentUsers = (req, res, next) => {
       throw new ErrorNotFound('Пользователь не найден');
     })
     .then((user) => res.send(user))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, email } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
-    .orFail(() => {
-      throw new ErrorNotFound('Пользователь с таким id не найден');
+    .then((user) => {
+      res.send(user);
     })
-    .then((user) => res.send(user))
     .catch((err) => {
-      next(err);
+      if (err.code === 11000) {
+        next(new ErrorConflict(`Пользователь с таким ${email} уже существует`));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -50,9 +51,7 @@ module.exports.createUser = (req, res, next) => {
       name: user.name,
       _id: user._id,
     }))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.login = (req, res, next) => {
@@ -63,7 +62,5 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' }); /* 'some-secret-key' */
       res.send({ token });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };

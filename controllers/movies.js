@@ -14,7 +14,8 @@ module.exports.addMovie = (req, res, next) => {
     nameRU,
     nameEN,
     thumbnail,
-    movieId } = req.body;
+    movieId,
+  } = req.body;
   const owner = req.user._id;
   Movie.create({
     country,
@@ -28,19 +29,16 @@ module.exports.addMovie = (req, res, next) => {
     nameEN,
     thumbnail,
     movieId,
-    owner })
+    owner,
+  })
     .then((movie) => res.send(movie))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.getMovies = (req, res, next) => {
   Movie.find({})
     .then((movies) => res.send(movies))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 module.exports.deleteMovie = (req, res, next) => {
@@ -52,11 +50,9 @@ module.exports.deleteMovie = (req, res, next) => {
       if (String(movie.owner) !== String(req.user._id)) {
         throw new ErrorNoRights('Нет прав на удаление');
       }
-      console.log(req.params._id);
+      // console.log(req.params._id);
       return Movie.findByIdAndRemove(req.params._id);
     })
     .then((movie) => res.send(movie))
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };

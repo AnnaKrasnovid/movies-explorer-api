@@ -5,12 +5,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 const cors = require('cors');
-const { createUser, login } = require('./controllers/users');
 const errorHandler = require('./middlewares/middlewares');
-const ErrorNotFound = require('./error/ErrorNotFound');
-const validation = require('./middlewares/validation');
-const auth = require('./middlewares/auth');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const router = require('./routes/index');
 
 const { PORT = 3000 } = process.env;
 
@@ -22,18 +19,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://localhost:27017/moviesdb', { useNewUrlParser: true });
 
 app.use(requestLogger);
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: [
+    'https://localhost:3001',
+    'https://localhost:3000',
+    'https://api.movies.krasnovid.nomoredomains.work',
+  ],
+}));
+
 app.use(requestLogger);
 
-app.use('/users', auth, require('./routes/users'));
-app.use('/movies', auth, require('./routes/movies'));
-
-app.post('/signin', validation.checkLogin, login);
-app.post('/signup', validation.checkUserCreate, createUser);
-
-app.use((req, res, next) => {
-  next(new ErrorNotFound('Not found'));
-});
+app.use(router);
 
 app.use(errorLogger);
 
