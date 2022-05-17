@@ -19,15 +19,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 mongoose.connect('mongodb://localhost:27017/moviesdb', { useNewUrlParser: true });
 
 app.use(requestLogger);
-// app.use(cors());
+app.use(cors());
 
-app.use(cors({
+/*app.use(cors({
   origin: [
     'https://localhost:3001',
     'https://localhost:3000',
     'https://api.movies.krasnovid.nomoredomains.work',
+    'https://movies.krasnovid.nomoredomains.xyz',
   ],
-}));
+}));*/
 
 app.use(requestLogger);
 
